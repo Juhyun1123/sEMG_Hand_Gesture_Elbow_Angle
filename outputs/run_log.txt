@@ -1,82 +1,86 @@
-numpy      2.5.3
-scipy      1.18.1
-sklearn    1.9.1
-xgboost    3.4.1
-pandas     3.0.6
-matplotlib 3.11.2
-���� ��: 64
-����: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\data\a_30 extor.csv
-Ŭ���� ����: Counter({'30_extor': 8, '30_fist': 8, '30_open': 8, '30_pro': 8, '60_extor': 8, '60_fist': 8, '60_open': 8, '60_pro': 8})
-�迭 ���: (151361, 5)
-ä�� ��: 5
-���� ���: 64 / ��Ŀ ���� ����: 1920
-���� Ŭ���� ����: Counter({'30_extor': 240, '30_fist': 240, '30_open': 240, '30_pro': 240, '60_extor': 240, '60_fist': 240, '60_open': 240, '60_pro': 240})
-
-[2���� �߰� ���]
-���� �� ǥ������: [0.0088 0.0153 0.0168 0.022  0.0046]
-���� �� ǥ������: [0.0077 0.0149 0.0163 0.0208 0.0041]
-���׸�Ʈ: (2000, 5)
-������: (19, 200, 5)
-Ư¡: (25,)
-���� ����Ʈ��: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_filter_spectrum.png
-
-[2���� �����ͼ�]
-�н�: (29184, 25) Counter({np.str_('30_pro'): 3648, np.str_('60_fist'): 3648, np.str_('30_open'): 3648, np.str_('60_open'): 3648, np.str_('60_extor'): 3648, np.str_('30_fist'): 3648, np.str_('60_pro'): 3648, np.str_('30_extor'): 3648})
-�׽�Ʈ: (7296, 25) Counter({np.str_('30_fist'): 912, np.str_('60_open'): 912, np.str_('30_extor'): 912, np.str_('60_extor'): 912, np.str_('60_fist'): 912, np.str_('60_pro'): 912, np.str_('30_open'): 912, np.str_('30_pro'): 912})
-�н� ���: [ 0. -0.  0.  0.  0.  0. -0. -0.  0. -0.  0. -0.  0.  0.  0.  0.  0.  0.
-  0.  0. -0.  0. -0. -0. -0.]
-�н� ǥ������: [1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.
- 1.]
-����: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\dataset.npz
-���� ����: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_trial_split.csv
-Ŭ���� ����: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_class_distribution.csv
-���� ���: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_summary.txt
-
-[3����: ���� 3�� + �߰� 2�� �� �н�]
-SVM �н� �Ϸ�
-RF �н� �Ϸ�
-XGB �н� �Ϸ�
-KNN �н� �Ϸ�
-LDA �н� �Ϸ�
-
-[3����: Hold-out ����]
-  model     acc  precision  recall      f1
-0   SVM  0.4818     0.4936  0.4818  0.4832
-1    RF  0.6367     0.6384  0.6367  0.6371
-2   XGB  0.6246     0.6260  0.6246  0.6248
-3   KNN  0.4988     0.5061  0.4988  0.4983
-4   LDA  0.2967     0.3221  0.2967  0.2999
-
-[3����: 5-fold ��������]
-5-fold: 1/5 �Ϸ�
-5-fold: 2/5 �Ϸ�
-5-fold: 3/5 �Ϸ�
-5-fold: 4/5 �Ϸ�
-5-fold: 5/5 �Ϸ�
-SVM: 47.58 �� 0.36 %
-RF: 64.64 �� 0.60 %
-XGB: 62.75 �� 0.68 %
-KNN: 49.54 �� 0.62 %
-LDA: 29.64 �� 1.37 %
-
-[3����: ����ǥ�� t-����]
-SVM vs RF: p = 0.0000  (������)
-SVM vs XGB: p = 0.0000  (������)
-SVM vs KNN: p = 0.0061  (������)
-SVM vs LDA: p = 0.0000  (������)
-RF vs XGB: p = 0.0002  (������)
-RF vs KNN: p = 0.0000  (������)
-RF vs LDA: p = 0.0000  (������)
-XGB vs KNN: p = 0.0000  (������)
-XGB vs LDA: p = 0.0000  (������)
-KNN vs LDA: p = 0.0000  (������)
-
-[3����: ��� ���]
-SVM: �н� 15.986s, �߷� 1.297 ms/sample
-RF: �н� 0.945s, �߷� 17.984 ms/sample
-XGB: �н� 4.555s, �߷� 1.133 ms/sample
-KNN: �н� 0.002s, �߷� 1.205 ms/sample
-LDA: �н� 0.026s, �߷� 0.080 ms/sample
-
-3���� ��� ���: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week3_summary.txt
-���� ������: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\README.md
+numpy      2.5.3
+scipy      1.18.1
+sklearn    1.9.1
+xgboost    3.4.1
+pandas     3.0.6
+matplotlib 3.11.2
+파일 수: 64
+예시: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\data\a_30 extor.csv
+클래스 분포: Counter({'30_extor': 8, '30_fist': 8, '30_open': 8, '30_pro': 8, '60_extor': 8, '60_fist': 8, '60_open': 8, '60_pro': 8})
+배열 모양: (151361, 5)
+채널 수: 5
+원본 기록: 64 / 마커 기준 시행: 1920
+시행 클래스 분포: Counter({'30_extor': 240, '30_fist': 240, '30_open': 240, '30_pro': 240, '60_extor': 240, '60_fist': 240, '60_open': 240, '60_pro': 240})
+
+[2주차 중간 결과]
+필터 전 표준편차: [0.0088 0.0153 0.0168 0.022  0.0046]
+필터 후 표준편차: [0.0077 0.0149 0.0163 0.0208 0.0041]
+세그먼트: (2000, 5)
+윈도우: (19, 200, 5)
+특징: (25,)
+필터 스펙트럼: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_filter_spectrum.png
+
+[2주차 데이터셋]
+학습: (29184, 25) Counter({np.str_('30_pro'): 3648, np.str_('60_fist'): 3648, np.str_('30_open'): 3648, np.str_('60_open'): 3648, np.str_('60_extor'): 3648, np.str_('30_fist'): 3648, np.str_('60_pro'): 3648, np.str_('30_extor'): 3648})
+테스트: (7296, 25) Counter({np.str_('30_fist'): 912, np.str_('60_open'): 912, np.str_('30_extor'): 912, np.str_('60_extor'): 912, np.str_('60_fist'): 912, np.str_('60_pro'): 912, np.str_('30_open'): 912, np.str_('30_pro'): 912})
+학습 평균: [ 0. -0.  0.  0.  0.  0. -0. -0.  0. -0.  0. -0.  0.  0.  0.  0.  0.  0.
+  0.  0. -0.  0. -0. -0. -0.]
+학습 표준편차: [1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.
+ 1.]
+저장: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\dataset.npz
+분할 명세: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_trial_split.csv
+클래스 분포: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_class_distribution.csv
+
+[3주차: 기존 3개 + 추가 2개 모델 학습]
+SVM 학습 완료
+RF 학습 완료
+XGB 학습 완료
+KNN 학습 완료
+LDA 학습 완료
+
+[3주차: Hold-out 성능]
+  model     acc  precision  recall      f1
+0   SVM  0.4818     0.4936  0.4818  0.4832
+1    RF  0.6367     0.6384  0.6367  0.6371
+2   XGB  0.6246     0.6260  0.6246  0.6248
+3   KNN  0.4988     0.5061  0.4988  0.4983
+4   LDA  0.2967     0.3221  0.2967  0.2999
+
+[추가 분석: 시행별 최빈 라벨 투표]
+model  window_acc  trial_acc  gain_pp  precision  recall     f1
+  SVM      0.4818     0.7604  27.8646     0.7891  0.7604 0.7665
+   RF      0.6367     0.9427  30.6058     0.9434  0.9427 0.9426
+  XGB      0.6246     0.9479  32.3328     0.9493  0.9479 0.9477
+  KNN      0.4988     0.8802  38.1442     0.8993  0.8802 0.8821
+  LDA      0.2967     0.4089  11.2116     0.4748  0.4089 0.4128
+
+[3주차: 5-fold 교차검증]
+5-fold: 1/5 완료
+5-fold: 2/5 완료
+5-fold: 3/5 완료
+5-fold: 4/5 완료
+5-fold: 5/5 완료
+SVM: 47.58 ± 0.36 %
+RF: 64.64 ± 0.60 %
+XGB: 62.75 ± 0.68 %
+KNN: 49.54 ± 0.62 %
+LDA: 29.64 ± 1.37 %
+
+[3주차: 대응표본 t-검정]
+SVM vs RF: p = 0.0000  (유의함)
+SVM vs XGB: p = 0.0000  (유의함)
+SVM vs KNN: p = 0.0061  (유의함)
+SVM vs LDA: p = 0.0000  (유의함)
+RF vs XGB: p = 0.0002  (유의함)
+RF vs KNN: p = 0.0000  (유의함)
+RF vs LDA: p = 0.0000  (유의함)
+XGB vs KNN: p = 0.0000  (유의함)
+XGB vs LDA: p = 0.0000  (유의함)
+KNN vs LDA: p = 0.0000  (유의함)
+
+[3주차: 계산 비용]
+SVM: 학습 15.573s, 추론 1.203 ms/sample
+RF: 학습 0.849s, 추론 16.802 ms/sample
+XGB: 학습 3.787s, 추론 0.933 ms/sample
+KNN: 학습 0.002s, 추론 1.215 ms/sample
+LDA: 학습 0.027s, 추론 0.055 ms/sample

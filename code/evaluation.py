@@ -1,6 +1,7 @@
 """3주차 실습 ② 성능 평가, ③ 혼동행렬, ⑤ 대응표본 t-검정."""
 
 from itertools import combinations
+from pathlib import Path
 
 import matplotlib
 matplotlib.use('Agg')
@@ -27,6 +28,48 @@ def evaluate_holdout(models, Xte, yte, output):
         ['model', 'acc', 'precision', 'recall', 'f1'])
     print(df.round(4))
     df.to_csv(output, index=False, encoding='utf-8-sig')
+    return df
+
+
+def evaluate_trial_vote(output, windows_per_trial):
+    """저장된 창별 예측을 같은 시행 안에서 최빈 라벨로 집계."""
+    output = Path(output)
+    if windows_per_trial <= 0:
+        raise ValueError('시행별 창 수는 양수여야 합니다.')
+    split = pd.read_csv(output / 'week2_trial_split.csv')
+    trials = split.loc[split['split'] == 'test'].reset_index(drop=True)
+    if trials.empty or trials['file'].duplicated().any():
+        raise ValueError('테스트 시행 명세가 비어 있거나 중복되었습니다.')
+    expected = np.repeat(trials['label'].to_numpy(), windows_per_trial)
+    baseline = pd.read_csv(output / 'week3_holdout_metrics.csv')
+    rows = []
+    for row in baseline.itertuples():
+        pred = pd.read_csv(output / f'predictions_{row.model}.csv')
+        if len(pred) != len(expected) or not np.array_equal(pred['true'], expected):
+            raise ValueError(f'{row.model}: 창별 예측과 시행 순서가 일치하지 않습니다.')
+        window_acc = accuracy_score(pred['true'], pred['predicted'])
+        if not np.isclose(window_acc, row.acc, atol=1e-12, rtol=0):
+            raise ValueError(f'{row.model}: 기존 평가와 예측 파일이 일치하지 않습니다.')
+        predictions = pred['predicted'].to_numpy().reshape(-1, windows_per_trial)
+        votes, counts, ties = [], [], []
+        for window_labels in predictions:
+            labels, n = np.unique(window_labels, return_counts=True)
+            # 최빈값 동률이면 사전순 첫 라벨 (LabelEncoder 순서와 동일).
+            votes.append(labels[np.argmax(n)])
+            counts.append(int(n.max())); ties.append(int(np.sum(n == n.max())))
+        y = trials['label'].to_numpy()
+        acc = accuracy_score(y, votes)
+        rows.append([row.model, window_acc, acc, (acc - window_acc) * 100,
+                     precision_score(y, votes, average='macro', zero_division=0),
+                     recall_score(y, votes, average='macro', zero_division=0),
+                     f1_score(y, votes, average='macro', zero_division=0)])
+        pd.DataFrame({'trial': trials['file'], 'true': y, 'predicted': votes,
+                      'winning_votes': counts, 'tied_classes': ties}).to_csv(
+            output / f'trial_predictions_{row.model}.csv', index=False, encoding='utf-8-sig')
+    df = pd.DataFrame(rows, columns=['model', 'window_acc', 'trial_acc', 'gain_pp',
+                                     'precision', 'recall', 'f1'])
+    print(df.round(4).to_string(index=False))
+    df.to_csv(output / 'week3_trial_vote_metrics.csv', index=False, encoding='utf-8-sig')
     return df
 
 
