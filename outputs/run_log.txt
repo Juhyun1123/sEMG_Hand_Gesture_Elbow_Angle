@@ -1,0 +1,82 @@
+numpy      2.5.3
+scipy      1.18.1
+sklearn    1.9.1
+xgboost    3.4.1
+pandas     3.0.6
+matplotlib 3.11.2
+���� ��: 64
+����: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\data\a_30 extor.csv
+Ŭ���� ����: Counter({'30_extor': 8, '30_fist': 8, '30_open': 8, '30_pro': 8, '60_extor': 8, '60_fist': 8, '60_open': 8, '60_pro': 8})
+�迭 ���: (151361, 5)
+ä�� ��: 5
+���� ���: 64 / ��Ŀ ���� ����: 1920
+���� Ŭ���� ����: Counter({'30_extor': 240, '30_fist': 240, '30_open': 240, '30_pro': 240, '60_extor': 240, '60_fist': 240, '60_open': 240, '60_pro': 240})
+
+[2���� �߰� ���]
+���� �� ǥ������: [0.0088 0.0153 0.0168 0.022  0.0046]
+���� �� ǥ������: [0.0077 0.0149 0.0163 0.0208 0.0041]
+���׸�Ʈ: (2000, 5)
+������: (19, 200, 5)
+Ư¡: (25,)
+���� ����Ʈ��: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_filter_spectrum.png
+
+[2���� �����ͼ�]
+�н�: (29184, 25) Counter({np.str_('30_pro'): 3648, np.str_('60_fist'): 3648, np.str_('30_open'): 3648, np.str_('60_open'): 3648, np.str_('60_extor'): 3648, np.str_('30_fist'): 3648, np.str_('60_pro'): 3648, np.str_('30_extor'): 3648})
+�׽�Ʈ: (7296, 25) Counter({np.str_('30_fist'): 912, np.str_('60_open'): 912, np.str_('30_extor'): 912, np.str_('60_extor'): 912, np.str_('60_fist'): 912, np.str_('60_pro'): 912, np.str_('30_open'): 912, np.str_('30_pro'): 912})
+�н� ���: [ 0. -0.  0.  0.  0.  0. -0. -0.  0. -0.  0. -0.  0.  0.  0.  0.  0.  0.
+  0.  0. -0.  0. -0. -0. -0.]
+�н� ǥ������: [1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.
+ 1.]
+����: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\dataset.npz
+���� ����: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_trial_split.csv
+Ŭ���� ����: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_class_distribution.csv
+���� ���: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week2_summary.txt
+
+[3����: ���� 3�� + �߰� 2�� �� �н�]
+SVM �н� �Ϸ�
+RF �н� �Ϸ�
+XGB �н� �Ϸ�
+KNN �н� �Ϸ�
+LDA �н� �Ϸ�
+
+[3����: Hold-out ����]
+  model     acc  precision  recall      f1
+0   SVM  0.4818     0.4936  0.4818  0.4832
+1    RF  0.6367     0.6384  0.6367  0.6371
+2   XGB  0.6246     0.6260  0.6246  0.6248
+3   KNN  0.4988     0.5061  0.4988  0.4983
+4   LDA  0.2967     0.3221  0.2967  0.2999
+
+[3����: 5-fold ��������]
+5-fold: 1/5 �Ϸ�
+5-fold: 2/5 �Ϸ�
+5-fold: 3/5 �Ϸ�
+5-fold: 4/5 �Ϸ�
+5-fold: 5/5 �Ϸ�
+SVM: 47.58 �� 0.36 %
+RF: 64.64 �� 0.60 %
+XGB: 62.75 �� 0.68 %
+KNN: 49.54 �� 0.62 %
+LDA: 29.64 �� 1.37 %
+
+[3����: ����ǥ�� t-����]
+SVM vs RF: p = 0.0000  (������)
+SVM vs XGB: p = 0.0000  (������)
+SVM vs KNN: p = 0.0061  (������)
+SVM vs LDA: p = 0.0000  (������)
+RF vs XGB: p = 0.0002  (������)
+RF vs KNN: p = 0.0000  (������)
+RF vs LDA: p = 0.0000  (������)
+XGB vs KNN: p = 0.0000  (������)
+XGB vs LDA: p = 0.0000  (������)
+KNN vs LDA: p = 0.0000  (������)
+
+[3����: ��� ���]
+SVM: �н� 15.986s, �߷� 1.297 ms/sample
+RF: �н� 0.945s, �߷� 17.984 ms/sample
+XGB: �н� 4.555s, �߷� 1.133 ms/sample
+KNN: �н� 0.002s, �߷� 1.205 ms/sample
+LDA: �н� 0.026s, �߷� 0.080 ms/sample
+
+3���� ��� ���: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\outputs\week3_summary.txt
+���� ������: C:\Workspace\sEMG_Hand_Gesture_Elbow_Angle\README.md
