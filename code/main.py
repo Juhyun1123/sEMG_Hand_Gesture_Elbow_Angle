@@ -9,8 +9,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from data import DataPipeline, label_of
-from evaluation import (evaluate_holdout, paired_tests,
-                        plot_confusion, write_week3_report)
+from evaluation import evaluate_holdout, paired_tests, plot_confusion
 from model import (cross_validate, load_dataset, make_models,
                    measure_compute_cost, train_models)
 
@@ -49,9 +48,9 @@ class Main:
         models = train_models(make_models(), Xtr, ytr)
 
         print('\n[3주차: Hold-out 성능]')
-        metrics = evaluate_holdout(models, Xte, yte,
+        evaluate_holdout(models, Xte, yte,
                                    self.output / 'week3_holdout_metrics.csv')
-        cm = plot_confusion(models, Xte, yte, le, self.output / 'confusion8.png')
+        plot_confusion(models, Xte, yte, le, self.output / 'confusion8.png')
 
         print('\n[3주차: 5-fold 교차검증]')
         labels = [label_of(f) for f in trials]
@@ -59,17 +58,12 @@ class Main:
                                   self.output / 'week3_cv_scores.csv')
 
         print('\n[3주차: 대응표본 t-검정]')
-        tests = paired_tests(fold_acc, self.output / 'week3_ttests.csv')
+        paired_tests(fold_acc, self.output / 'week3_ttests.csv')
 
         print('\n[3주차: 계산 비용]')
-        costs = measure_compute_cost(models, Xtr, ytr, Xte,
+        measure_compute_cost(models, Xtr, ytr, Xte,
                                      self.output / 'week3_compute_times.csv')
-        report_path = write_week3_report(metrics, fold_acc, tests, costs, cm['RF'],
-                                         le.classes_, self.output / 'week3_summary.txt')
-        print('\n3주차 결과 요약:', report_path)
-        from report import write_readme
-        write_readme(self.root, self.output, metrics, fold_acc, tests, costs, cm, le.classes_)
-        print('최종 보고서:', self.root / 'README.md')
+
 
 
 if __name__ == '__main__':

@@ -316,9 +316,8 @@ class DataPipeline:
         plt.close(fig)
         return path
 
-    def write_week2_reports(self, files, labels, Xtr, ytr, Xte, yte,
-                            seg_shape, window_shape, feature_shape):
-        """2주차 제출용 데이터 분할 증거·클래스 분포·요약."""
+    def save_split_tables(self, files, labels, ytr, yte):
+        """시행 분할 명세와 클래스 분포를 CSV로 저장."""
         train_files, train_labels, test_files, test_labels = split_trials(
             files, labels, test_size=0.2, random_state=42)
 
@@ -347,44 +346,7 @@ class DataPipeline:
                 writer.writerow([label, trials_train[label], trials_test[label],
                                  counts_train[label], counts_test[label]])
 
-        report = [
-            '[2주차 실습 제출 확인]',
-            f'분석 세그먼트 모양: {seg_shape}',
-            f'윈도우 배열 모양: {window_shape}',
-            f'첫 윈도우 특징 벡터 모양: {feature_shape}',
-            f'특징 순서: {", ".join(FEATURE_NAMES)} (각 5채널)',
-            f'학습 특징 데이터: {Xtr.shape}, 테스트 특징 데이터: {Xte.shape}',
-            f'학습 시행: {len(train_files)}, 테스트 시행: {len(test_files)}',
-            f'학습 윈도우: {len(ytr)}, 테스트 윈도우: {len(yte)}',
-            f'학습 클래스 분포: {dict(sorted(counts_train.items()))}',
-            f'테스트 클래스 분포: {dict(sorted(counts_test.items()))}',
-            f'학습 표준화 평균(절댓값 최대): {np.max(np.abs(Xtr.mean(axis=0))):.8g}',
-            f'학습 표준화 표준편차: {np.array2string(Xtr.std(axis=0).round(6))}',
-            '',
-            '[④ 데이터 누수 방지]',
-            'train_test_split(stratify=labels)로 원본 시행 ID를 먼저 분할합니다.',
-            '이후 각 분할 집합 안에서 필터 → 2초 자르기 → 윈도우 → 특징 추출을 수행합니다.',
-            'StandardScaler.fit은 학습 데이터에만 적용합니다.',
-            '분할된 실제 시행 목록: week2_trial_split.csv',
-            '',
-            '[⑥ 설정 근거 예시 — 실습 설정]',
-            '200ms: 하나의 창에서 근활성도의 단기 변화를 통계 특징으로 요약하기 위한 길이입니다.',
-            '200ms: 너무 짧은 창보다 RMS/MAV 등의 통계량을 안정적으로 계산할 샘플을 확보합니다.',
-            '50% 오버랩: 인접 창을 겹쳐 신호 변화가 창 경계에서 누락될 가능성을 줄입니다.',
-            '50% 오버랩: 창 개수를 늘리면서도 연산량 증가를 제한하는 절충안입니다.',
-            '',
-            '[검토 필요]',
-            '기본 START=1500, LEN=2000은 강의의 실습 가정입니다.',
-            'mark를 5초 시행의 시작으로 해석합니다. 신호의 실제 동작 위치는 별도 주석 확인이 필요합니다.',
-            '같은 피험자·기록 파일의 서로 다른 시행이 양쪽 분할에 포함될 수 있습니다.',
-            '',
-            '[제출 파일 안내]',
-            'week2_filter_spectrum.png / week2_summary.txt / week2_trial_split.csv',
-            'week2_class_distribution.csv / dataset.npz / data.py',
-        ]
-        report_path = self.output / 'week2_summary.txt'
-        report_path.write_text('\n'.join(report) + '\n', encoding='utf-8-sig')
-        return split_path, dist_path, report_path
+        return split_path, dist_path
 
     def run_week2(self, files):
         labels = [label_of(f) for f in files]
@@ -411,9 +373,7 @@ class DataPipeline:
         print('학습 평균:', Xtr.mean(axis=0).round(6))
         print('학습 표준편차:', Xtr.std(axis=0).round(6))
         print('저장:', self.output / 'dataset.npz')
-        split_path, dist_path, report_path = self.write_week2_reports(
-            files, labels, Xtr, ytr, Xte, yte, seg.shape, windows.shape, first_features.shape)
+        split_path, dist_path = self.save_split_tables(files, labels, ytr, yte)
         print('분할 명세:', split_path)
         print('클래스 분포:', dist_path)
-        print('제출 요약:', report_path)
         return Xtr, ytr, Xte, yte, scaler
