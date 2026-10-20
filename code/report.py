@@ -43,7 +43,7 @@ def write_readme(root, output, metrics, fold_acc, tests, costs, matrices, class_
         '', '### 실행 방법',
         '', 'Python 3.12 환경에서 저장소를 내려받고 프로젝트 루트에서 실행한다. 최초 실행에는 패키지 설치가 필요하다.',
         '', '```bash', 'python -m venv .venv', '# Windows PowerShell', '.venv\\Scripts\\Activate.ps1',
-        '# macOS / Linux: source .venv/bin/activate', 'python -m pip install -r requirements.txt',
+        '# macOS / Linux: source .venv/bin/activate', 'python -m pip install -r requirements-lock.txt',
         'python main.py', '```',
         '', '실행 순서는 1주차 데이터 확인 → 2주차 전처리·특징 → 3주차 학습·평가 → README 작성이다. 콘솔에 성능 표, 폴드 결과, p값, 계산 비용이 출력된다. `README.md`는 실행 결과로 다시 생성된다.',
         '', '프로젝트 폴더를 옮겨도 `__file__`을 기준으로 `data/`와 `outputs/`를 찾는다. 다른 작업 폴더에서는 실행 파일의 경로를 지정한다. 가상환경은 이동한 컴퓨터에서 새로 만든다.',
@@ -58,6 +58,9 @@ def write_readme(root, output, metrics, fold_acc, tests, costs, matrices, class_
             ['`code/evaluation.py`', '네 성능 지표, 모든 모델의 혼동행렬·예측, 대응표본 검정'],
             ['`code/report.py`', '실험 수치로 README 생성'],
             ['`requirements.txt`', '실제 학습에 사용한 주요 패키지 버전'],
+            ['`requirements-lock.txt`', '별도 환경에서 설치·검증한 전체 의존성 20개 버전'],
+            ['`code/audit.py`', '원자료 재계산·독립 재학습·평가 단위·구간 진단'],
+            ['`reproduction_reference.json`', '제출 시점의 고정 데이터·예측·CV 기준값. 일반 실행에서 덮어쓰지 않음'],
             ['`data/`', '제공된 원본 CSV 64개'], ['`outputs/`', '검증 가능한 결과 CSV·그림·요약']]),
         '', '### 1주차: 문제 정의와 데이터 이해',
         '', f'입력은 전완·상완 5채널 sEMG이며 시간 열의 간격은 전체 CSV에서 0.001초(1 kHz)로 확인했다. {len(summary)}개 CSV는 각각 약 150초 이상의 연속 기록이고, 파일마다 `mark`가 30개 있다. 마커 간격은 4,999~5,001샘플이다. 파일 접두사는 a~h의 8개 ID이며, 이를 피험자 ID로 취급한다. 실제 개인 신상과 연결하지 않는다.',
@@ -231,4 +234,94 @@ def write_readme(root, output, metrics, fold_acc, tests, costs, matrices, class_
         '', '`outputs/dataset.npz`는 실행 시 생성하며 Git 추적에서 제외했다. 원본 `data/`와 코드로 재생성할 수 있다. 모든 그림과 결과 CSV는 Git 추적 대상이다. `work/`와 가상환경은 제출 대상에서 제외한다.',
         '', 'README는 `code/report.py`에서 실제 결과를 읽어 생성하므로 재학습 시 표와 혼동행렬 분석을 함께 갱신할 수 있다.',
     ]
+    lines += audit_analysis(output, link)
     (root / 'README.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def audit_analysis(output, link):
+    """추가 진단이 완료된 경우 README에 검증 범위와 수치 차이 분석 추가."""
+    audit = output / 'audit'
+    required = ['reproducibility.json', 'evaluation_unit_diagnostic.csv',
+                'segment_sensitivity.csv']
+    if not all((audit / name).exists() for name in required):
+        return []
+    result = json.loads((audit / 'reproducibility.json').read_text(encoding='utf-8'))
+    from audit import dataset_digest, sha256
+    if result.get('baseline_dataset_digest') != dataset_digest(output / 'dataset.npz'):
+        return ['', '## 5. 추가 진단의 갱신 필요', '',
+                '저장된 audit 진단과 현재 dataset의 지문이 다릅니다. `python code/audit.py`로 재검증하세요.']
+    root = Path(__file__).resolve().parents[1]
+    for name in ['main.py', 'code/main.py', 'code/data.py', 'code/model.py', 'code/evaluation.py']:
+        if result['source_sha256'].get(name) != sha256(root / name):
+            return ['', '## 5. 추가 진단의 갱신 필요', '',
+                    '진단 당시와 현재 학습 코드가 다릅니다. `python code/audit.py`로 재검증하세요.']
+    units = pd.read_csv(audit / 'evaluation_unit_diagnostic.csv')
+    segments = pd.read_csv(audit / 'segment_sensitivity.csv')
+    checks = result['checks']
+    pivot = units.pivot(index='model', columns='unit', values='acc')
+    rows = []
+    for name in ['SVM', 'RF', 'XGB', 'KNN', 'LDA']:
+        row = pivot.loc[name]
+        mean = row.get('trial_mean_features', np.nan)
+        rows.append([name, f'{row["window"]*100:.2f}%',
+                     f'{row["trial_majority"]*100:.2f}%',
+                     f'{mean*100:.2f}%' if np.isfinite(mean) else '미실행'])
+    cm = pd.read_csv(output / 'confusion_RF.csv', index_col=0)
+    error_total = int(cm.to_numpy().sum() - np.trace(cm))
+    same_gesture = sum(int(cm.iloc[i,j]) for i,a in enumerate(cm.index)
+                       for j,b in enumerate(cm.columns)
+                       if i != j and a.split('_')[1] == b.split('_')[1])
+    lines = [
+        '', '## 5. 논문·PPT와 다른 결과의 원인 분석',
+        '', '### 확인 범위와 판단',
+        '', '현재 구현은 강의 실습의 처리 절차를 재현했지만, 논문의 성능 수치까지 재현한 결과는 아니다. 낮은 점수를 버전이나 난수 탓으로 단정하기 전에 평가 단위와 원신호 구간을 추가 진단했다. 아래 진단은 기본 결과를 대체하지 않으며 테스트 점수를 이용한 탐색이므로 새로운 독립 검증 결과로 해석하지 않는다.',
+        '', '출판사 [공식 초록](https://link.springer.com/article/10.1007/s13534-026-00607-7)에서 RF 5-fold 96.72 ± 0.58%와 같은 동작의 각도 혼동이 주요 오류라는 점을 확인했다. 공개 페이지에서 본문 전체는 열람할 수 없어 나머지 세부 조건·표 수치는 제공 PPT를 근거로 대조했다. 공식 페이지의 데이터 제공 방식은 저자 요청이며 현재 CSV와 논문 분석 데이터의 동일성을 파일 수만으로 입증할 수 없다.',
+        '', '### 5.1 평가 단위: 실제로 큰 차이가 확인됨',
+        '', table(['모델', '창별 평가·7,296창', '19창 다수결·384시행', '특징 평균 후 재학습·384시행'], rows),
+        '', '`창별 평가`는 기존 25D 모델의 각 창 예측을 그대로 센 값이다. `다수결`은 같은 학습 모델의 같은 예측 19개를 한 시행으로 묶어 1표본으로 센다. 동률은 인코딩 순서가 앞선 라벨로 결정했다. `특징 평균`은 한 시행의 19개 25D 특징을 평균하고 학습 시행에서만 다시 표준화하여 시행당 한 벡터로 모델을 새로 학습한 별도 진단이다. 시간영역 5특징과 모델 설정은 유지했다.',
+        '', '다수결에서는 맞는 창이 절반 이하여도 정답 라벨이 가장 많은 표를 받으면 시행은 정답이 된다. 따라서 창별 정확도와 시행별 정확도는 서로 다른 질문에 대한 수치이다. 논문이 두 방식 중 어느 것을 실제 사용했는지 원 분석 코드를 확인하지 못했으므로, 진단 점수가 논문 값에 가까워졌다는 이유만으로 해당 방식을 논문 설정이라고 확정할 수 없다.',
+        '', 'PPT 본문 p.24는 학습 1,536·테스트 384개 라벨 세그먼트를 제시하고 p.26은 각 세그먼트의 19개 25D 특징을 설명한다. 동시에 입력 표본 구성의 세부 방식은 명시되지 않았다고 적는다. 현재 기본 실습은 창을 각각 입력하여 학습 29,184·테스트 7,296개가 된다. 이 차이가 우선 확인해야 할 조건이다. macro/micro 평균 선택은 Accuracy 자체를 바꾸지 않으므로 수십 %p의 정확도 격차를 평균 방식만으로 설명할 수는 없다.',
+        '', '### 5.2 분석 구간: 고정 시작점의 민감도',
+        '', '같은 시행 분할과 RF 설정에서 분석 시작점만 바꾸었다. 각 시행을 독립 필터링한 뒤 2초를 자르고 19창을 만드는 순서는 같다.',
+        '', table(['마커 후 시작', '분석 구간', 'RF 창별 Accuracy', 'RF macro F1'], [
+            [f'{r.segment_start_ms/1000:.1f}s', f'{r.segment_start_ms/1000:.1f}~{r.segment_start_ms/1000+2:.1f}s',
+             f'{r.acc*100:.2f}%', f'{r.macro_f1:.6f}'] for r in segments.itertuples()]),
+        '', '이는 시작점에 따라 신호의 정보량과 분류 결과가 달라짐을 확인하는 민감도 분석이다. 마커가 시행 시작인지 동작 시작인지를 입증하는 실험은 아니다. 테스트 점수가 높은 시작점을 골라 기본값을 변경하지 않았으며 원 동작 주석이 없으므로 현재 START=1500은 강의 가정으로 유지한다.',
+        '', '현재 1.5~3.5초 구간의 창 위치별 결과도 달랐다. 위치별 값은 ' + link('audit/window_position_accuracy.csv') + '에 있다. 일부 창에 휴식·전환 성분이 더 포함됐을 가능성이 있으나 실제 동작 구간은 원자료 주석 확인이 필요하다.',
+        '', '### 5.3 오분류·모델 순위·통계 결론도 다름',
+        '', f'기본 RF는 총 {error_total}개 오류 중 같은 동작의 다른 각도로 분류한 오류가 {same_gesture}개({same_gesture/error_total*100:.2f}%)이다. 논문의 주요 오류가 같은 동작의 각도 혼동이었다는 설명과 달리, 현재 창 평가에서는 동작까지 틀린 오류가 더 많다. 휴식 구간 포함·입력 표본 구성·신호 차이를 추가 확인해야 하는 근거이며 전부 각도 분류의 어려움으로 설명할 수 없다.',
+        '', '창별 Hold-out에서는 RF가 가장 높지만, 시행 다수결에서는 XGB가 RF보다 높다. 표본 구성과 의사결정 집계만 바뀌어도 순위가 바뀔 수 있으므로 한 방식의 1위를 보편적 우월성으로 해석하지 않는다. 기본 CV에서의 큰 모델 간 점수 차이 때문에 t-검정 결과도 논문과 달랐지만, 겹치는 학습 폴드 5쌍의 검정 한계는 그대로 남는다.',
+        '', '### 5.4 아직 확인하지 못한 요인',
+        '', '- CSV의 `extor`가 강의의 supination과 같은 실제 동작인지 확인되지 않았다. 이름만 일관되게 바꾸는 것은 정확도를 바꾸지 않으며 실제 동작 구성이나 잘못된 주석일 때 성능 비교에 영향을 준다.',
+        '- `mark` 의미, 실제 수축 시작·종료, 물리적 신호 단위, 근육별 채널 순서는 원자료 설명이 필요하다. 0.01이라는 ZC 임계값은 물리 단위와 배율이 다르면 다른 의미를 갖는다.',
+        '- CSV 열명이 `bandpass`이지만 취득 필터의 차수·대역·이득을 확인하지 못했다. 이중 필터가 격차의 원인이라고 입증한 것은 아니다.',
+        '- 논문의 정확한 분할 ID·입력 구성·원 특징·환경 파일이 없어 현재 CSV·버전·분할이 원 분석과 동일한지 확인할 수 없다.',
+        '', '따라서 현재 근거로는 평가 단위의 영향과 구간 민감도가 실험으로 확인됐고, 마커 해석·원자료 동일성·신호 단위는 미확인 원인 후보이다. 수치 일치를 위해 가정을 숨기거나 테스트 점수가 좋은 설정을 정답처럼 채택하지 않았다.',
+        '', '## 6. 실행자와 무관한 재현 가능성 점검',
+        '', '**판정: 같은 원자료와 실행 조건에서는 재현됨을 확인했다. 모든 운영체제·CPU에서 비트 단위로 동일한 결과를 보장한 것은 아니다.** 실행자의 계정명·프로젝트 절대 경로를 학습 코드에 고정하지 않았고, 경로 이동 점검도 수행했다.',
+        '', '기존 가상환경을 재사용하지 않고 같은 컴퓨터에서 Python 3.12.14로 별도의 빈 가상환경을 만든 뒤 `requirements.txt`의 패키지를 새로 설치했다. 별도 프로세스에서 64개 CSV부터 다시 전처리·학습·평가했고 전체 5-fold도 반복했다. 새 환경의 전체 20개 패키지 버전은 `requirements-lock.txt`에 고정했다.',
+        '', table(['확인 항목', '검사 결과'], [[k, '일치' if v else '불일치'] for k,v in checks.items()]),
+        '', table(['모델', '기존 예측과 다른 창 수 / 7,296'], list(result['prediction_mismatches'].items())),
+        '', f'5모델 × 5폴드의 정확도 최대 절대 차이는 {result["max_cv_absolute_delta"]:.16g}이다. 특징 배열은 array_equal로 원소 단위 일치를 확인하고 지표·CV 점수는 절대 허용오차 1e-12로 비교했다. 동일 머신의 별도 가상환경·프로세스 검증이며 다른 사람의 컴퓨터나 macOS/Linux에서 실제 실행한 검증은 아니다.',
+        '', '### 재현성을 확보한 부분과 남는 범위',
+        '', table(['항목', '현재 상태'], [
+            ['원자료·파일 순서', 'sorted 경로 순서, 64개 파일의 상대 경로·바이트 수·SHA-256 기록'],
+            ['분할·학습 난수', 'Hold-out·5-fold·RF·XGB에 정수 seed 42 고정'],
+            ['SVM·KNN·LDA', '현재 설정은 난수 기반 학습을 사용하지 않음. SVC는 probability=False이므로 random_state 미지정이 현재 변동 원인은 아님'],
+            ['전처리', '상수·특징 순서 고정, 같은 시행의 창은 같은 분할, scaler는 학습 집합에서만 fit'],
+            ['패키지', '주요 6개는 requirements.txt, 새 환경 전체 20개는 requirements-lock.txt에 정확한 버전 기록'],
+            ['Python·OS·수치 라이브러리', 'Python 3.12.14·Windows 11에서 확인. Python 실행 파일·BLAS 바이너리·다른 OS까지 고정한 컨테이너는 없음'],
+            ['CPU 스레드', 'RF/KNN n_jobs=-1, XGB 기본 스레드 수. 다른 하드웨어·스레드 구성까지 동일성은 미검증'],
+            ['시간·환경 파일', '학습·추론 시간, 실행 시각, 절대 경로와 일부 직렬화 산출물은 실행마다 달라질 수 있음'],
+            ['설치 가능성', '새 환경 설치 성공. 다른 OS의 동일 버전 wheel 지원·네트워크 접근은 해당 환경에서 별도 확인 필요']]),
+        '', '[scikit-learn의 난수 제어 문서](https://scikit-learn.org/stable/common_pitfalls.html#controlling-randomness)는 분할·추정기의 정수 seed에 따른 반복성을 설명한다. [SVC 문서](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)는 probability=False이면 random_state를 사용하지 않는다고 설명한다. [XGBoost FAQ](https://xgboost.readthedocs.io/en/stable/faq.html#slightly-different-result-between-runs)는 부동소수점 합산 순서와 멀티스레딩에 따른 미세한 결과 변동 가능성을 명시한다. 따라서 seed 하나로 모든 환경의 완전 동일성을 보장한다고 표현하지 않는다.',
+        '', '### 다른 실행자를 위한 검증 절차',
+        '', '1. 같은 저장소 코드와 원본 data/를 내려받는다. Python 3.12.14로 가상환경을 새로 만든다.',
+        '2. `python -m pip install -r requirements-lock.txt`로 검증 환경의 의존성 버전을 설치한다.',
+        '3. `python main.py`로 기본 실험을 재생성한다. 성능 지표·시행 분할·혼동행렬을 제출 결과와 비교한다.',
+        '4. `python code/audit.py`로 원자료부터 한 번 더 계산한다. 방금 실행한 기본 결과뿐 아니라 저장소의 고정 `reproduction_reference.json`에 담긴 제출 시점 데이터·예측·CV와도 자동 비교한다. 기존 outputs/가 있어야 한다.',
+        '5. `outputs/audit/reproducibility.json`의 published_* 검사를 확인한다. 원본 파일 해시·특징 지문·모델별 예측·25개 CV 점수가 고정 기준과 다른 경우 audit는 실패 종료한다. 고정 기준 파일은 main/audit가 자동 갱신하지 않는다.',
+        '', '현재 데이터로 main과 audit가 서로 일치하는 것만으로는 제출 당시 결과의 재현을 입증하지 못하므로 고정 기준과도 비교한다. 기준 파일 자체를 바꾸면 비교의 의미가 달라지므로 실험 변경 시 의도적으로 버전을 관리해야 한다. 출력 그림은 렌더링 환경 때문에 바이트까지 같지 않을 수 있어 예측·분할·수치 배열을 우선 비교한다. 고정 기준: [reproduction_reference.json](reproduction_reference.json).',
+        '', '검증 근거: ' + ', '.join(link('audit/' + n) for n in ['reproducibility.json','input_sha256.csv','holdout_metrics.csv','cv_scores.csv','evaluation_unit_diagnostic.csv','segment_sensitivity.csv','window_position_accuracy.csv']) + '.',
+    ]
+    return lines

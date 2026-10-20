@@ -1,0 +1,204 @@
+{
+  "description": "Fixed reference for the submitted 2026-10-20 window-level experiment; main.py and audit.py do not overwrite this file.",
+  "input_sha256": {
+    "a_30 extor.csv": "cef9a5c411058c212b9d1e8fcec03037df0fc1f6c9c364ebfcb32077a33fbcc1",
+    "a_30 fist.csv": "54457628270d0f12d01ac0b948de88284654221fac00d3250a54e0472cf85355",
+    "a_30 open.csv": "ba4b097051670febfbb3bcdb3b9bcd0bbf9259bb10101e7e9736563a56d7dfae",
+    "a_30 pro.csv": "3acc4bfb7ffbaa2bba882eb07db13b0b249d32b20790e1ec2c4d21b462374daf",
+    "a_60 extor.csv": "c2256753cc08c39aa7765f1752fedcafae323fe4ae1f7ae7365ee3e48819b7be",
+    "a_60 fist.csv": "39e8c7f345cf3882520313db0acf86e94a048530b243a2fd07f15d3cb5060ab7",
+    "a_60 open.csv": "080f10f668cc73f5b68a16d6a8b19658d1fa5405b4dd568e5e15443988e2b8c3",
+    "a_60 pro.csv": "31c27c1918b0cb981a1123993615b7ab4a5e2e9bd851f280bb4967975cb91faa",
+    "b_30 extor.csv": "5cc2a67a24b05468955e4fc414de1a672c902f3e115b9597943f1fc3f58085bf",
+    "b_30 fist.csv": "08e887dff8476bae4e2f84147d0d1a41ae7a0f1ed30e879e74ea92de54ac6b82",
+    "b_30 open.csv": "1c713966e2d04476d41fd369a1b7e2944ea94f23483790e79183e229e0aed9c7",
+    "b_30 pro.csv": "89333dc69e794da4ee988de0368ec40c38815eb6150106a75d300577cb0b959a",
+    "b_60 extor.csv": "33e825b0a4e43ee1d3d0dfef21255d30f57a9fdbc43af7eaf509dcd15cd3e0cf",
+    "b_60 fist.csv": "cac3c4b8e3b63fffa281fdf854584a1b970248600b458201179e974e616e0e5a",
+    "b_60 open.csv": "63e39060a574342850865f75754a9a0d3dc77c405623d886fb8f8def3cba7dbd",
+    "b_60 pro.csv": "02d1f905510a719a35365377a27ae7ea15720d825c8ebfb9b59fda614fc84bc5",
+    "c_30 extor.csv": "3aa4ef713b67f49432f4bc7c186a986875263168f38e74bd8f40975884c715c3",
+    "c_30 fist.csv": "90534347ca15fa4081cc30a25a9c1be9a8fef7b0f660cff4cb3ee0f667d2c150",
+    "c_30 open.csv": "cdc171dbf518a6a40a0116b80b1306d9581b4e020ea9e59cd2d81bee6c578162",
+    "c_30 pro.csv": "37e143c112dd1ea6d4a9d91d5a20b92952fa3b5b01d4383c9c0fdceab4e68a19",
+    "c_60 extor.csv": "0a9de6dcaa4c3d09a61dcef1b43e8653bd2264c0bed8ce18d3cc77b69373e42e",
+    "c_60 fist.csv": "2fdd6be82511a63e4251b946275e3bc9d917a23c6fd049535ce565afb313b8c9",
+    "c_60 open.csv": "2725b2b8209c3f76365d0294bc196191aef75d7b2d92c301fa4227aefc04037a",
+    "c_60 pro.csv": "949c465aa866a29db94d334cb9f6d45bc557b8ba30ad554b2b896b3979bfa702",
+    "d_30 extor.csv": "0005c9dca738df0e71c015ca82c9667e5a3ae3247e820273128dcc4ac2b24b16",
+    "d_30 fist.csv": "c74aaf91ff71c5782293c5cd45e5544a33494fae14a4c3b3dcf8e7c5f22e4b49",
+    "d_30 open.csv": "a9c4d86ab2c10d7a2cd938b99ba34616ec5d34ca29dc000d97274f9f1ffcf62d",
+    "d_30 pro.csv": "da2c53eb5bdfca8789b29018bf1e4a069303f17d53bf7b161a3ea5d8dc5a7c19",
+    "d_60 extor.csv": "a91c065ecc1164276cdaf7ef1e265f23de486e7989b8c19cf6fd7ba45777e151",
+    "d_60 fist.csv": "532a133cdfdec66baa83a9234d9f669ff17ab0876d70064575b76087ca565c5a",
+    "d_60 open.csv": "a456a357e1b1f48e1f44179fa372d2ea4a61ec646e904634632a50f7e725a59d",
+    "d_60 pro.csv": "c45744aba18c29d7e65fa94e9390dcc97378692f517a207a4bd5c362ea0cd405",
+    "e_30 extor.csv": "d009712e2f5eac9b418067036a537aa567dab4871d18093911bcb1d82a48e42b",
+    "e_30 fist.csv": "fcc530c33436b4d0b2d4ab67daa37de4885f229a6c5a99cfe33faf0c1917d631",
+    "e_30 open.csv": "4f81a648d141dbca4a9ba234ecebf6164e96a96dea56cbc64696f509505493bf",
+    "e_30 pro.csv": "e63abe32a7215aa260b7f52d18c677d8c3f44646cb09f718489930120f8c26a3",
+    "e_60 extor.csv": "7089141dea174d52255383968e2703240a706034532d7448f35e1383cc1b77ca",
+    "e_60 fist.csv": "96acaa5f212eea31cde2982a16f86e1c5e6b2e11a4a44a891dc9d7060cd2a604",
+    "e_60 open.csv": "b23371660f12c227e176e50ee8c3dc64aae059510082477eb9e1955fcb460f71",
+    "e_60 pro.csv": "26cff52a9527224324c7b89cca66cfa708cfa98a601155def6d0b0495ef88311",
+    "f_30 extor.csv": "54d0c81ad830780c09ed401e014f267c3b4be58df92b27d1f9bada9ed46d4b7b",
+    "f_30 fist.csv": "ba0b1f04334d31c889269a61cf9cb5d57d8983898fe41db366a032cfe56a7eed",
+    "f_30 open.csv": "b8356be141cf91175488a8b7a3861e4529f030fa9ce09857600377a87a072576",
+    "f_30 pro.csv": "96db2b022d88417c895b45d773e8a01ee791e6fc7a15dc9349bacccdea510abc",
+    "f_60 extor.csv": "258a1bfab3c918e887acbb8b184f24130e93124f4e36b80a9f553629af346876",
+    "f_60 fist.csv": "a2f43991692948abcf7cd01ca6ee73548d18a7ec5643a7abb9b1bf9b8b30ef77",
+    "f_60 open.csv": "e62d019af4c516b041f065077a448cffde27f30dc0b50f2388c53c58134e0463",
+    "f_60 pro.csv": "fb3ca92abac0767a1a30308d62854f64e4a2046c28182cf6dd8190bf3fdeb20f",
+    "g_30 extor.csv": "44ca86c8273e59faa1f0c9e9da5949b1e7b1e6ba72b6ee2ab5464829cff30fdc",
+    "g_30 fist.csv": "796305e38500c0d8df6c27211977dfb45f36bf6d1da017ab0dfcc8b76d178464",
+    "g_30 open.csv": "0316025a82244b2e128b1646ba7e4a30b00e665997f9eb2bc9733df452b7bf08",
+    "g_30 pro.csv": "b78e1ebbede2132d172b01d110475e0754be1d851b02b42ef8a219ef7afac15c",
+    "g_60 extor.csv": "4eef74f2b125e87526370a572e4fcf122cd548d84211e4ad1670627fecf7764b",
+    "g_60 fist.csv": "4969c2763f4d95767018b83ece195ae16dc30175a8842b6165852ee44e23314b",
+    "g_60 open.csv": "ec96678490556bd4f82378399c62eb2a30380c6c3ae1e2aa151b729df94a8e92",
+    "g_60 pro.csv": "315e50b7658b23fc9189007905032c78a4ed5791d9a6bbec7d09b3f8bd094e2e",
+    "h_30 extor.csv": "6b7f87f59daaab44e340b037714d9a513deaa55a1ea0037caf1ee4e295d5f7de",
+    "h_30 fist.csv": "c94bff50bd2948c22f21ff11a1186fea27bc99d123c5cb7c45eeb89fc05d3b1f",
+    "h_30 open.csv": "f03bb861c7e24dbf9c0e9c7f6b10230e4a22f7e195ba900e27f60b517b9ae37a",
+    "h_30 pro.csv": "1048fef91d798c6bb0ad079346909f26d2ccdda929ce42a6d5076401885f6b2e",
+    "h_60 extor.csv": "670beeeae702b359828aed921b80d182500fb7705048b4638bb6dd9ef6388d4e",
+    "h_60 fist.csv": "7228c99f918ba83bab7846452f31cdc67634e68566eb88643011718dcd26833a",
+    "h_60 open.csv": "de0d2822e36d7ea91f21fe1f705fdf84a98f15fe2b402dee5b334344f60fe5ec",
+    "h_60 pro.csv": "8a8f5747d6b7d89bbe51882a90e2456d933542cbffdaa9d1ecd9b98a870c5d09"
+  },
+  "dataset_digest": "f026a67f7f0b644ebeb43cbc668e4dffcc35bd1b981b78e0ba93cb20db2b6dc7",
+  "prediction_sha256": {
+    "SVM": "20eec4f2d29a32253a7ca31deb4df4354df04d7319dce851365541176d6ab5f7",
+    "RF": "6ce1bd75a76a9854ef8607a3ba50d23e283fa1868a124ebb3dcbbedb4fecbb91",
+    "XGB": "d1b317b4941c1ba41f32e51b9c2839f719b5b8b1720735004e467cd7df49eafa",
+    "KNN": "482e053710390b41460bcafd51a2ba1d7aa1bf428cc9a94615c1351535ed4ebf",
+    "LDA": "592059e4f83474e29d2808fc44581c5ed4937fa9fec1dcf95e4839fa10eb7d34"
+  },
+  "cv_scores": [
+    {
+      "fold": 1,
+      "model": "SVM",
+      "acc": 0.4690241228070175
+    },
+    {
+      "fold": 1,
+      "model": "RF",
+      "acc": 0.6441885964912281
+    },
+    {
+      "fold": 1,
+      "model": "XGB",
+      "acc": 0.6251370614035088
+    },
+    {
+      "fold": 1,
+      "model": "KNN",
+      "acc": 0.4998629385964912
+    },
+    {
+      "fold": 1,
+      "model": "LDA",
+      "acc": 0.2765899122807017
+    },
+    {
+      "fold": 2,
+      "model": "SVM",
+      "acc": 0.4794407894736842
+    },
+    {
+      "fold": 2,
+      "model": "RF",
+      "acc": 0.6528234649122807
+    },
+    {
+      "fold": 2,
+      "model": "XGB",
+      "acc": 0.6328125
+    },
+    {
+      "fold": 2,
+      "model": "KNN",
+      "acc": 0.501233552631579
+    },
+    {
+      "fold": 2,
+      "model": "LDA",
+      "acc": 0.309484649122807
+    },
+    {
+      "fold": 3,
+      "model": "SVM",
+      "acc": 0.4765625
+    },
+    {
+      "fold": 3,
+      "model": "RF",
+      "acc": 0.6437774122807017
+    },
+    {
+      "fold": 3,
+      "model": "XGB",
+      "acc": 0.6203399122807017
+    },
+    {
+      "fold": 3,
+      "model": "KNN",
+      "acc": 0.4873903508771929
+    },
+    {
+      "fold": 3,
+      "model": "LDA",
+      "acc": 0.2838541666666667
+    },
+    {
+      "fold": 4,
+      "model": "SVM",
+      "acc": 0.4761513157894737
+    },
+    {
+      "fold": 4,
+      "model": "RF",
+      "acc": 0.6377467105263158
+    },
+    {
+      "fold": 4,
+      "model": "XGB",
+      "acc": 0.6212993421052632
+    },
+    {
+      "fold": 4,
+      "model": "KNN",
+      "acc": 0.4882127192982456
+    },
+    {
+      "fold": 4,
+      "model": "LDA",
+      "acc": 0.3019462719298245
+    },
+    {
+      "fold": 5,
+      "model": "SVM",
+      "acc": 0.4777960526315789
+    },
+    {
+      "fold": 5,
+      "model": "RF",
+      "acc": 0.6535087719298246
+    },
+    {
+      "fold": 5,
+      "model": "XGB",
+      "acc": 0.6380208333333334
+    },
+    {
+      "fold": 5,
+      "model": "KNN",
+      "acc": 0.5001370614035088
+    },
+    {
+      "fold": 5,
+      "model": "LDA",
+      "acc": 0.3101699561403508
+    }
+  ]
+}
